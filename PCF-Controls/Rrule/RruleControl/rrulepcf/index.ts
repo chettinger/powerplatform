@@ -1,7 +1,8 @@
 import { IInputs, IOutputs } from "./generated/ManifestTypes";
-import { ByWeekday, Frequency, RRule, Weekday, Options } from 'rrule';
+import { ByWeekday, Frequency, RRule, Weekday } from 'rrule';
 import {DateTime} from 'luxon';
 import { handleByDayInput } from './byDayMapping';
+import toJsonSchema from "to-json-schema";
 
 interface RuleOptions {
     freq?: Frequency;
@@ -16,7 +17,15 @@ interface RuleOptions {
     bymonthday?: [number];
     byyearday?: [number];
     tzid?: string;
-}
+    byweekno?: null,
+    bynweekday?: null,
+    bynmonthday?: null,
+    byhour?: null,
+    byminute?: null,
+    bysecond?: null,
+    byeaster?: null
+    }
+
 export class rrulepcf implements ComponentFramework.StandardControl<IInputs, IOutputs> {
 
     private _container: HTMLDivElement;
@@ -24,41 +33,18 @@ export class rrulepcf implements ComponentFramework.StandardControl<IInputs, IOu
     private _rruleStringOutput: string;
     private _rruleText: string;
     private _frequencyMapping: any;
-    private _priorContextInput: ComponentFramework.Context<IInputs>;
     private notifyOutputChanged: () => void;
-    private inputStartDateV2: Date;
-    private endDateV2: Date;
-    public _debug: any;
-    public _ruleOptions: RuleOptions;
-    public _ruleOptionsV2: Options;
+    private _outputSchema: any;
 
+    public _debug: any;
+    public ruleOptions: RuleOptions;
 
     /**
      * Empty constructor.
      */
     constructor() {
         
-        this._ruleOptionsV2 = {
-            freq: Frequency.YEARLY,
-            dtstart: null,
-            interval: 1,
-            wkst: null,
-            count: null,
-            until: null,
-            tzid: null,
-            bysetpos: null,
-            bymonth: null,
-            bymonthday: null,
-            byyearday: null,
-            byweekday: null,
-            byweekno: null,
-            bynweekday: null,
-            bynmonthday: null,
-            byhour: null,
-            byminute: null,
-            bysecond: null,
-            byeaster: null
-        };
+        
     }
 
     /**
@@ -73,12 +59,17 @@ export class rrulepcf implements ComponentFramework.StandardControl<IInputs, IOu
         this._container = document.createElement("div");
         container.appendChild(this._container);
         this.notifyOutputChanged = notifyOutputChanged;
-
+        
         this._frequencyMapping = {
             "Yearly": RRule.YEARLY,
             "Monthly": RRule.MONTHLY,
             "Weekly": RRule.WEEKLY,
             "Daily": RRule.DAILY
+        };
+        this.ruleOptions = {
+            freq: RRule.YEARLY,
+            interval: 1,
+            wkst: RRule.SU
         };
 
         this.notifyOutputChanged();
@@ -91,96 +82,21 @@ export class rrulepcf implements ComponentFramework.StandardControl<IInputs, IOu
     public updateView(context: ComponentFramework.Context<IInputs>) {
         
         
-            try {
-                if (context.parameters.freq.raw) {
-                    
-                    // store the prior context input
-                    this._priorContextInput = context;
+            try {    
                     // store temp value for old rrule string and compare to help limit the notifyOutputChanged
                     const oldRruleStringOutput = this._rruleStringOutput;
-
-                    // handle input parameters
-                    this._ruleOptionsV2.wkst = RRule.SU;
-                    const inputFrequency: Frequency = this._frequencyMapping[context.parameters.freq.raw as keyof typeof this._frequencyMapping];
-                    this._ruleOptionsV2.freq = inputFrequency;
                     
-                    const inputInterval: number = context.parameters.interval?.raw ?? 1;
-                    this._ruleOptionsV2.interval = inputInterval;
-
-                    /*
-                     Handling of ByDay input
-                    */
-                    let inputByWeekday: any;
-                    if (context.parameters.byWeekDay.raw && typeof context.parameters.byWeekDay.raw === 'string') {
-                        inputByWeekday = handleByDayInput(context.parameters.byWeekDay.raw);
-                        this._ruleOptionsV2.byweekday = inputByWeekday;
-                    }
-
-                    /*
-                    Building the rule options object
-                    */
-
-                    let ruleOptions: RuleOptions = {
-                        freq: inputFrequency,
-                        interval: inputInterval,
-                        wkst: RRule.SU
-                    };
-
-                    // set start date & tzid
-                    if (context.parameters.startDate.raw) {
-                        const inputStartDate = context.parameters.startDate?.raw ?? new Date();
-                        const startDateToUtc = new Date(Date.UTC(inputStartDate.getFullYear(), inputStartDate.getMonth(), inputStartDate.getDate(), inputStartDate.getHours(), inputStartDate.getMinutes(), inputStartDate.getSeconds()));
-                        this._ruleOptionsV2.dtstart = startDateToUtc;
-
-                        const inputStartDateLuxon = DateTime.fromJSDate(inputStartDate);
-                        this._ruleOptionsV2.tzid = inputStartDateLuxon.zone.name;
-
-                        ruleOptions.dtstart = this.inputStartDateV2;
-                        ruleOptions.tzid = inputStartDateLuxon.zone.name;
-                    }
-
-                    if (context.parameters.endDate.raw && context.parameters.endDate.raw instanceof Date) {
-                        const inputEndDate = context.parameters.endDate.raw;
-                        const endDateToUtc = new Date(Date.UTC(inputEndDate.getFullYear(), inputEndDate.getMonth(), inputEndDate.getDate(), inputEndDate.getHours(), inputEndDate.getMinutes(), inputEndDate.getSeconds()));
-                        this._ruleOptionsV2.until = endDateToUtc
-                    }
-
-                    if (context.parameters.count.raw && context.parameters.count.raw != 0) {
-                        this._ruleOptionsV2.count = context.parameters.count.raw;
-                    }
-
-                    if (context.parameters.bySetPos.raw && context.parameters.bySetPos.raw != 0) {
-                        this._ruleOptionsV2.bysetpos = context.parameters.bySetPos.raw;
-                    }
-
-                    if (context.parameters.byWeekDay.raw && context.parameters.byWeekDay.raw != "val") {
-                        this._ruleOptionsV2.byweekday = inputByWeekday;
-                    }
-                    
-                    if (context.parameters.byMonth.raw && context.parameters.byMonth.raw != "val" && context.parameters.byMonth.raw != "0") {
-                        this._ruleOptionsV2.bymonth = JSON.parse(context.parameters.byMonth.raw);
-                    }
-                    
-
-                    if (context.parameters.byMonthDay.raw && context.parameters.byMonthDay.raw != "val" && context.parameters.byMonthDay.raw) {
-                        this._ruleOptionsV2.bymonthday = JSON.parse(context.parameters.byMonthDay.raw);
-                    }
-
-                    if (context.parameters.byYearDay.raw && context.parameters.byYearDay.raw != "val" && context.parameters.byYearDay.raw != "0") {
-                        this._ruleOptionsV2.byyearday = JSON.parse(context.parameters.byYearDay.raw);
-                    }
+                    // map input values to rule options - this has been shifted to separate mapInputsToRuleOptions function for better readability
+                    this.mapInputsToRuleOptions(context);
 
                     const rule = new RRule(
-                        this._ruleOptionsV2);
+                        this.ruleOptions);
 
-                    /*
-                    Assembling the outputs
-                    */
-                    
-                    if((this._ruleOptionsV2.until == undefined || this._ruleOptionsV2.until == null) && (this._ruleOptionsV2.count == null || this._ruleOptionsV2.count === 0)) {
+                    // if no end date is set, default to 2 years                    
+                    if((this.ruleOptions.until == undefined || this.ruleOptions.until == null) && (this.ruleOptions.count == null || this.ruleOptions.count === 0)) {
                         
                         // using a temp variable to prevent the setFullYear from recursively changing this.InputStartDateV2
-                        const startDateTemp = new Date(this._ruleOptionsV2.dtstart || new Date());
+                        const startDateTemp = new Date(this.ruleOptions.dtstart || new Date());
                         let endDate = startDateTemp;
                         // add 2 years to the start date
                         endDate.setFullYear(endDate.getFullYear() + 2);
@@ -199,18 +115,88 @@ export class rrulepcf implements ComponentFramework.StandardControl<IInputs, IOu
 
                     }
                     // update dates
-
                     this._rruleStringOutput = rule.toString();
                     this._rruleText = rule.toText();
-                    //console.log("Dates: " + this._dates);
+
+                    if(this._outputSchema == null) {
+                        this._outputSchema = toJsonSchema(this._dates);
+                    }
                     if (oldRruleStringOutput != this._rruleStringOutput) {
                         this.notifyOutputChanged();
                     }
-                }
             } catch (error) {
                 console.error('An error occurred:', error);
             }
-        
+    }
+
+    private mapInputsToRuleOptions(context: ComponentFramework.Context<IInputs>) {
+        /*
+                    Building the rule options object
+                    */
+
+                    // handle input parameters
+                    const inputFrequency: Frequency = this._frequencyMapping[context.parameters.freq.raw as keyof typeof this._frequencyMapping];
+                    const inputInterval: number = context.parameters.interval?.raw ?? 1;
+
+                    this.ruleOptions = {
+                        freq: inputFrequency,
+                        interval: inputInterval,
+                        wkst: RRule.SU
+                    };
+                   /*
+                     Handling of ByDay input
+                    */
+                     let inputByWeekday: any;
+                     if (context.parameters.byWeekDay.raw && typeof context.parameters.byWeekDay.raw === 'string' && context.parameters.byWeekDay.raw != "val") {
+                         inputByWeekday = handleByDayInput(context.parameters.byWeekDay.raw);
+                         this.ruleOptions.byweekday = inputByWeekday;
+                     }
+
+                    // set start date & tzid
+                    if (context.parameters.startDate.raw) {
+                        const inputStartDate = context.parameters.startDate?.raw ?? new Date();
+                        const startDateToUtc = new Date(Date.UTC(inputStartDate.getFullYear(), inputStartDate.getMonth(), inputStartDate.getDate(), inputStartDate.getHours(), inputStartDate.getMinutes(), inputStartDate.getSeconds()));
+                        this.ruleOptions.dtstart = startDateToUtc;
+
+                        const inputStartDateLuxon = DateTime.fromJSDate(inputStartDate);
+                        this.ruleOptions.tzid = inputStartDateLuxon.zone.name;
+                    }
+
+                    if (context.parameters.endDate.raw && context.parameters.endDate.raw instanceof Date) {
+                        const inputEndDate = context.parameters.endDate.raw;
+                        const endDateToUtc = new Date(Date.UTC(inputEndDate.getFullYear(), inputEndDate.getMonth(), inputEndDate.getDate(), inputEndDate.getHours(), inputEndDate.getMinutes(), inputEndDate.getSeconds()));
+                        this.ruleOptions.until = endDateToUtc
+                    }
+
+                    if (context.parameters.count.raw && context.parameters.count.raw != 0) {
+                        this.ruleOptions.count = context.parameters.count.raw;
+                    }
+
+                    if (context.parameters.bySetPos.raw && context.parameters.bySetPos.raw != 0) {
+                        this.ruleOptions.bysetpos = context.parameters.bySetPos.raw;
+                    }
+
+                    if (context.parameters.byWeekDay.raw && context.parameters.byWeekDay.raw != "val") {
+                        this.ruleOptions.byweekday = inputByWeekday;
+                    }
+                    
+                    if (context.parameters.byMonth.raw && context.parameters.byMonth.raw != "val" && context.parameters.byMonth.raw != "0") {
+                        this.ruleOptions.bymonth = JSON.parse(context.parameters.byMonth.raw);
+                    }
+                    
+                    if (context.parameters.byMonthDay.raw && context.parameters.byMonthDay.raw != "val" && context.parameters.byMonthDay.raw) {
+                        this.ruleOptions.bymonthday = JSON.parse(context.parameters.byMonthDay.raw);
+                    }
+
+                    if (context.parameters.byYearDay.raw && context.parameters.byYearDay.raw != "val" && context.parameters.byYearDay.raw != "0") {
+                        this.ruleOptions.byyearday = JSON.parse(context.parameters.byYearDay.raw);
+                    }
+    }
+
+    public async getOutputSchema(context: ComponentFramework.Context<IInputs>): Promise<any> {
+        return Promise.resolve({
+            output: this._outputSchema
+        });
     }
 
     /**
@@ -221,6 +207,8 @@ export class rrulepcf implements ComponentFramework.StandardControl<IInputs, IOu
 
         //console.log("getOutputs");
         return {
+            output: this._dates,
+            outputSchema: JSON.stringify(this._outputSchema),
             stringDateOutput: JSON.stringify(this._dates),
             rruleStringOutput: this._rruleStringOutput,
             rruleTextOutput: this._rruleText

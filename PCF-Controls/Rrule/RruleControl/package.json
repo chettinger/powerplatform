@@ -15,9 +15,10 @@
   },
   "dependencies": {
     "@types/json-schema": "^7.0.15",
+    "@types/to-json-schema": "^0.2.4",
     "luxon": "^3.4.4",
-    "moment-timezone": "^0.5.45",
-    "rrule": "^2.8.1"
+    "rrule": "^2.8.1",
+    "to-json-schema": "^0.2.5"
   },
   "devDependencies": {
     "@microsoft/eslint-plugin-power-apps": "^0.2.6",
