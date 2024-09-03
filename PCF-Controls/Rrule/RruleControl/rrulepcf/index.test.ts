@@ -36,7 +36,7 @@ describe('PCF Control Tests', () => {
     context.parameters.freq.raw = 'Yearly';
     context.parameters.startDate.raw = new Date();
     pcfControl.updateView(context);
-    expect(pcfControl._ruleOptionsV2.freq).toEqual(RRule.YEARLY);
+    expect(pcfControl.ruleOptions.freq).toEqual(RRule.YEARLY);
   });
 
   test('Set Freq to Weekly eq Rrule.WEEKLY', () => {
@@ -44,7 +44,7 @@ describe('PCF Control Tests', () => {
     context.parameters.freq.raw = 'Weekly';
     context.parameters.startDate.raw = new Date();
     pcfControl.updateView(context);
-    expect(pcfControl._ruleOptionsV2.freq).toEqual(RRule.WEEKLY);
+    expect(pcfControl.ruleOptions.freq).toEqual(RRule.WEEKLY);
   });
 
   test('Set Freq to Monthly eq Rrule.MONTHLY', () => {
@@ -52,7 +52,7 @@ describe('PCF Control Tests', () => {
     context.parameters.freq.raw = 'Monthly';
     context.parameters.startDate.raw = new Date();
     pcfControl.updateView(context);
-    expect(pcfControl._ruleOptionsV2.freq).toEqual(RRule.MONTHLY);
+    expect(pcfControl.ruleOptions.freq).toEqual(RRule.MONTHLY);
   });
 
   test('Set Freq to Daily eq Rrule.DAILY', () => {
@@ -60,21 +60,21 @@ describe('PCF Control Tests', () => {
     context.parameters.freq.raw = 'Daily';
     context.parameters.startDate.raw = new Date();
     pcfControl.updateView(context);
-    expect(pcfControl._ruleOptionsV2.freq).toEqual(RRule.DAILY);
+    expect(pcfControl.ruleOptions.freq).toEqual(RRule.DAILY);
   });
 
   test('_RuleOptionsV2 should have interval set to 1 if interval is not provided', () => {
     context.parameters.freq.raw = 'Yearly';
     context.parameters.startDate.raw = new Date();
     pcfControl.updateView(context);
-    expect(pcfControl._ruleOptionsV2.interval).toEqual(1);
+    expect(pcfControl.ruleOptions.interval).toEqual(1);
   });
   test('_RuleOptionsV2 should have interval set to 2 if interval of 2 is provided', () => {
     context.parameters.freq.raw = 'Yearly';
     context.parameters.startDate.raw = new Date();
     context.parameters.interval.raw = 2;
     pcfControl.updateView(context);
-    expect(pcfControl._ruleOptionsV2.interval).toEqual(2);
+    expect(pcfControl.ruleOptions.interval).toEqual(2);
   });
   
   test('_RuleOptionsV2 should have byWeekDay set to Rrule.SU if byWeekDay of "Sunday" is provided', () => {
@@ -82,7 +82,7 @@ describe('PCF Control Tests', () => {
     context.parameters.startDate.raw = new Date();
     context.parameters.byWeekDay.raw = 'Sunday';
     pcfControl.updateView(context);
-    expect(pcfControl._ruleOptionsV2.byweekday).toEqual([RRule.SU]);
+    expect(pcfControl.ruleOptions.byweekday).toEqual([RRule.SU]);
   });
   test('start date should result in expected start date option', () => {
     //const startDate = new Date("2024-07-28T04:32:00.000-04:00");
@@ -92,12 +92,12 @@ describe('PCF Control Tests', () => {
     pcfControl.updateView(context);
     console.log("startDate: " + startDate);
     console.log("context.parameters.startDate.raw" + context.parameters.startDate.raw);
-    console.log("_ruleOptions.dtstart: " + pcfControl._ruleOptionsV2.dtstart);
+    console.log("ruleOptions.dtstart: " + pcfControl.ruleOptions.dtstart);
     
     //expect(pcfControl._ruleOptions.dtstart).toEqual(startDate);
   });
 
-/*
+
   test('daily frequency with start date of 8/1/2024 12:00 AM repeating every 1 day until 8/3/2024 should result in 3 dates generated: 8/1/2024, 8/2/2024, 8/3/2024', () => {
     const startDate = new Date("2024-08-01T00:00:00.000-04:00");
     const untilDate = new Date("2024-08-03T00:00:00.000-04:00");
@@ -108,7 +108,17 @@ describe('PCF Control Tests', () => {
     console.log("_dates: " + pcfControl._dates);
     expect(pcfControl._dates).toEqual([startDate, new Date("2024-08-02T00:00:00.000-04:00"), untilDate]);
   });
-
+  /*test('daily frequency with start date of 8/1/2024 12:00 AM and no end date', () => {
+    const startDate = new Date("2024-08-01T00:00:00.000-04:00");
+    //const untilDate = new Date("2024-08-03T00:00:00.000-04:00");
+    context.parameters.freq.raw = 'Daily';
+    context.parameters.startDate.raw = startDate;
+    //context.parameters.endDate.raw = untilDate;
+    pcfControl.updateView(context);
+    console.log("_dates: " + pcfControl._dates);
+    expect(pcfControl._dates).toEqual([startDate]);
+  });*/
+/*
   test('Manilla timezone; daily frequency with start date of 8/1/2024 12:00 AM repeating every 1 day until 8/3/2024 should result in 3 dates generated: 8/1/2024, 8/2/2024, 8/3/2024', () => {
     const startDate = new Date("2024-08-01T00:00:00.000+08:00");
     const untilDate = new Date("2024-08-03T00:00:00.000+08:00");

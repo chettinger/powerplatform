@@ -96,15 +96,20 @@ export class rrulepcf implements ComponentFramework.StandardControl<IInputs, IOu
                     if((this.ruleOptions.until == undefined || this.ruleOptions.until == null) && (this.ruleOptions.count == null || this.ruleOptions.count === 0)) {
                         
                         // using a temp variable to prevent the setFullYear from recursively changing this.InputStartDateV2
-                        const startDateTemp = new Date(this.ruleOptions.dtstart || new Date());
-                        let endDate = startDateTemp;
+                        const startDate = new Date(this.ruleOptions.dtstart || new Date());
+                        const endDateTemp = new Date(this.ruleOptions.dtstart || new Date());
+                        
+                        let endDate = endDateTemp;
+                        
                         // add 2 years to the start date
                         endDate.setFullYear(endDate.getFullYear() + 2);
-                            this._dates = rule.between(startDateTemp, endDate,true).map(date =>
-                                DateTime.fromJSDate(date)
-                                  .toUTC()
-                                  .setZone('local', { keepLocalTime: true })
-                                  .toJSDate());
+                        this._dates = rule.between(startDate, endDate,true).map(date =>
+                            DateTime.fromJSDate(date)
+                                .toUTC()
+                                .setZone('local', { keepLocalTime: true })
+                                .toJSDate());
+                                console.log('this._dates: ' + this._dates);
+                                // console.log('all dates: ' + rule.all());
                     } else {
                         this._dates = rule.all().map(date =>
                             DateTime.fromJSDate(date)
@@ -124,6 +129,8 @@ export class rrulepcf implements ComponentFramework.StandardControl<IInputs, IOu
                     if (oldRruleStringOutput != this._rruleStringOutput) {
                         this.notifyOutputChanged();
                     }
+
+                    console.log(JSON.stringify(this.ruleOptions))
             } catch (error) {
                 console.error('An error occurred:', error);
             }
