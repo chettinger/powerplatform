@@ -84,6 +84,10 @@
     </RootComponents>
     <MissingDependencies>
       <MissingDependency>
+        <Required type="66" schemaName="ais_ais.rrulepcf" displayName="ais_ais.rrulepcf" solution="RrulePCF (1.0.0.4)" />
+        <Dependent type="300" schemaName="ais_recurrencescheduler_388c0" displayName="Recurrence Scheduler" />
+      </MissingDependency>
+      <MissingDependency>
         <Required type="66" schemaName="cat_PowerCAT.CommandBar" displayName="cat_PowerCAT.CommandBar" solution="CreatorKitCore (1.0.20230727.2)" />
         <Dependent type="300" schemaName="ais_recurrencescheduler_388c0" displayName="Recurrence Scheduler" />
       </MissingDependency>
