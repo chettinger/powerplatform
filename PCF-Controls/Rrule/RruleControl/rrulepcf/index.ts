@@ -2,7 +2,6 @@ import { IInputs, IOutputs } from "./generated/ManifestTypes";
 import { ByWeekday, Frequency, RRule, Weekday } from 'rrule';
 import {DateTime} from 'luxon';
 import { handleByDayInput } from './byDayMapping';
-import toJsonSchema from "to-json-schema";
 
 interface RuleOptions {
     freq?: Frequency;
@@ -29,12 +28,12 @@ interface RuleOptions {
 export class rrulepcf implements ComponentFramework.StandardControl<IInputs, IOutputs> {
 
     private _container: HTMLDivElement;
-    private _dates: Date[];
+    private _dates: any;
     private _rruleStringOutput: string;
     private _rruleText: string;
     private _frequencyMapping: any;
     private notifyOutputChanged: () => void;
-    private _outputSchema: any;
+
 
     public _debug: any;
     public ruleOptions: RuleOptions;
@@ -122,13 +121,11 @@ export class rrulepcf implements ComponentFramework.StandardControl<IInputs, IOu
                             );
 
                     }
-                    // update dates
+                    
+                   // update dates
                     this._rruleStringOutput = rule.toString();
                     this._rruleText = rule.toText();
 
-                    if(this._outputSchema == null) {
-                        this._outputSchema = toJsonSchema(this._dates);
-                    }
                     if (oldRruleStringOutput != this._rruleStringOutput) {
                         this.notifyOutputChanged();
                     }
@@ -197,7 +194,7 @@ export class rrulepcf implements ComponentFramework.StandardControl<IInputs, IOu
                         ruleOptions.bymonth = JSON.parse(context.parameters.byMonth.raw);
                     }
                     
-                    if (context.parameters.byMonthDay.raw && context.parameters.byMonthDay.raw != "val" && context.parameters.byMonthDay.raw) {
+                    if (context.parameters.byMonthDay.raw && context.parameters.byMonthDay.raw != "val" && context.parameters.byMonthDay.raw && context.parameters.byMonthDay.raw != "0") {
                        // this.ruleOptions.bymonthday = JSON.parse(context.parameters.byMonthDay.raw);
                         ruleOptions.bymonthday = JSON.parse(context.parameters.byMonthDay.raw);
                     }
@@ -210,11 +207,6 @@ export class rrulepcf implements ComponentFramework.StandardControl<IInputs, IOu
     return ruleOptions
     }
 
-    public async getOutputSchema(context: ComponentFramework.Context<IInputs>): Promise<any> {
-        return Promise.resolve({
-            output: this._outputSchema
-        });
-    }
 
     /**
      * It is called by the framework prior to a control receiving new data.
@@ -224,8 +216,6 @@ export class rrulepcf implements ComponentFramework.StandardControl<IInputs, IOu
 
         //console.log("getOutputs");
         return {
-            output: this._dates,
-            outputSchema: JSON.stringify(this._outputSchema),
             stringDateOutput: JSON.stringify(this._dates),
             rruleStringOutput: this._rruleStringOutput,
             rruleTextOutput: this._rruleText
