@@ -1,0 +1,29 @@
+{
+  "version": 2,
+  "dgSpecHash": "5zkgAzApDJJ1M1uj//hFltKhJln1jCdlI1TXLC573pXh5+kE0h/Zb4ZQP576tFkV3qRmcpQtoSU2GYtk+Jgu2g==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Jairam.Kunderu\\source\\repos\\ToD\\PowerAppSolutions\\powerplatform\\powerplatform\\CommonFunctionsPlugin\\CommonFunctionsPlugin.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Jairam.Kunderu\\.nuget\\packages\\ical.net\\4.2.0\\ical.net.4.2.0.nupkg.sha512",
+    "C:\\Users\\Jairam.Kunderu\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\6.0.0\\microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512",
+    "C:\\Users\\Jairam.Kunderu\\.nuget\\packages\\microsoft.crmsdk.coreassemblies\\9.0.2.56\\microsoft.crmsdk.coreassemblies.9.0.2.56.nupkg.sha512",
+    "C:\\Users\\Jairam.Kunderu\\.nuget\\packages\\microsoft.netframework.referenceassemblies\\1.0.0\\microsoft.netframework.referenceassemblies.1.0.0.nupkg.sha512",
+    "C:\\Users\\Jairam.Kunderu\\.nuget\\packages\\microsoft.netframework.referenceassemblies.net471\\1.0.0\\microsoft.netframework.referenceassemblies.net471.1.0.0.nupkg.sha512",
+    "C:\\Users\\Jairam.Kunderu\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
+    "C:\\Users\\Jairam.Kunderu\\.nuget\\packages\\nodatime\\3.0.0\\nodatime.3.0.0.nupkg.sha512",
+    "C:\\Users\\Jairam.Kunderu\\.nuget\\packages\\nuget.build.tasks.pack\\5.2.0\\nuget.build.tasks.pack.5.2.0.nupkg.sha512",
+    "C:\\Users\\Jairam.Kunderu\\.nuget\\packages\\system.buffers\\4.5.1\\system.buffers.4.5.1.nupkg.sha512",
+    "C:\\Users\\Jairam.Kunderu\\.nuget\\packages\\system.memory\\4.5.4\\system.memory.4.5.4.nupkg.sha512",
+    "C:\\Users\\Jairam.Kunderu\\.nuget\\packages\\system.numerics.vectors\\4.5.0\\system.numerics.vectors.4.5.0.nupkg.sha512",
+    "C:\\Users\\Jairam.Kunderu\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
+    "C:\\Users\\Jairam.Kunderu\\.nuget\\packages\\system.runtime.interopservices.runtimeinformation\\4.3.0\\system.runtime.interopservices.runtimeinformation.4.3.0.nupkg.sha512",
+    "C:\\Users\\Jairam.Kunderu\\.nuget\\packages\\system.servicemodel.http\\4.10.3\\system.servicemodel.http.4.10.3.nupkg.sha512",
+    "C:\\Users\\Jairam.Kunderu\\.nuget\\packages\\system.servicemodel.primitives\\4.10.3\\system.servicemodel.primitives.4.10.3.nupkg.sha512",
+    "C:\\Users\\Jairam.Kunderu\\.nuget\\packages\\system.text.encodings.web\\6.0.0\\system.text.encodings.web.6.0.0.nupkg.sha512",
+    "C:\\Users\\Jairam.Kunderu\\.nuget\\packages\\system.text.json\\6.0.8\\system.text.json.6.0.8.nupkg.sha512",
+    "C:\\Users\\Jairam.Kunderu\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512",
+    "C:\\Users\\Jairam.Kunderu\\.nuget\\packages\\system.valuetuple\\4.5.0\\system.valuetuple.4.5.0.nupkg.sha512",
+    "C:\\Users\\Jairam.Kunderu\\.nuget\\packages\\timezoneconverter\\6.1.0\\timezoneconverter.6.1.0.nupkg.sha512"
+  ],
+  "logs": []
+}
