@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>CommonFunctionsPlugin</id>
+    <version>1.0.0</version>
+    <authors>Placeholder</authors>
+    <owners>Placeholder</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Placeholder</description>
+    <tags>plugin</tags>
+    <dependencies>
+      <group targetFramework=".NETFramework4.7.1">
+        <dependency id="Ical.Net" version="4.2.0" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.CrmSdk.CoreAssemblies" version="9.0.2.56" exclude="Build,Analyzers" />
+        <dependency id="Newtonsoft.Json" version="13.0.3" exclude="Build,Analyzers" />
+        <dependency id="NuGet.Build.Tasks.Pack" version="5.2.0" exclude="Build,Analyzers" />
+        <dependency id="TimeZoneConverter" version="6.1.0" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="Microsoft.CSharp" targetFramework=".NETFramework4.7.1" />
+      <frameworkAssembly assemblyName="mscorlib" targetFramework=".NETFramework4.7.1" />
+      <frameworkAssembly assemblyName="System.Core" targetFramework=".NETFramework4.7.1" />
+      <frameworkAssembly assemblyName="System.Data.DataSetExtensions" targetFramework=".NETFramework4.7.1" />
+      <frameworkAssembly assemblyName="System.Data" targetFramework=".NETFramework4.7.1" />
+      <frameworkAssembly assemblyName="System.DirectoryServices.AccountManagement" targetFramework=".NETFramework4.7.1" />
+      <frameworkAssembly assemblyName="System.DirectoryServices" targetFramework=".NETFramework4.7.1" />
+      <frameworkAssembly assemblyName="System" targetFramework=".NETFramework4.7.1" />
+      <frameworkAssembly assemblyName="System.IdentityModel" targetFramework=".NETFramework4.7.1" />
+      <frameworkAssembly assemblyName="System.Numerics" targetFramework=".NETFramework4.7.1" />
+      <frameworkAssembly assemblyName="System.Runtime.InteropServices.RuntimeInformation" targetFramework=".NETFramework4.7.1" />
+      <frameworkAssembly assemblyName="System.Runtime.Serialization" targetFramework=".NETFramework4.7.1" />
+      <frameworkAssembly assemblyName="System.Security" targetFramework=".NETFramework4.7.1" />
+      <frameworkAssembly assemblyName="System.ServiceModel" targetFramework=".NETFramework4.7.1" />
+      <frameworkAssembly assemblyName="System.ServiceModel.Web" targetFramework=".NETFramework4.7.1" />
+      <frameworkAssembly assemblyName="System.Web" targetFramework=".NETFramework4.7.1" />
+      <frameworkAssembly assemblyName="System.Xml" targetFramework=".NETFramework4.7.1" />
+      <frameworkAssembly assemblyName="System.Xml.Linq" targetFramework=".NETFramework4.7.1" />
+    </frameworkAssemblies>
+  </metadata>
+  <files>
+    <file src="bin\Debug\CommonFunctionsPlugin.dll" target="lib\net471\CommonFunctionsPlugin.dll" />
+    <file src="bin\Debug\Ical.Net.dll" target="lib\net471\Ical.Net.dll" />
+    <file src="bin\Debug\Microsoft.Bcl.AsyncInterfaces.dll" target="lib\net471\Microsoft.Bcl.AsyncInterfaces.dll" />
+    <file src="bin\Debug\Newtonsoft.Json.dll" target="lib\net471\Newtonsoft.Json.dll" />
+    <file src="bin\Debug\NodaTime.dll" target="lib\net471\NodaTime.dll" />
+    <file src="bin\Debug\System.Buffers.dll" target="lib\net471\System.Buffers.dll" />
+    <file src="bin\Debug\System.Data.Common.dll" target="lib\net471\System.Data.Common.dll" />
+    <file src="bin\Debug\System.Diagnostics.StackTrace.dll" target="lib\net471\System.Diagnostics.StackTrace.dll" />
+    <file src="bin\Debug\System.Diagnostics.Tracing.dll" target="lib\net471\System.Diagnostics.Tracing.dll" />
+    <file src="bin\Debug\System.Globalization.Extensions.dll" target="lib\net471\System.Globalization.Extensions.dll" />
+    <file src="bin\Debug\System.IO.Compression.dll" target="lib\net471\System.IO.Compression.dll" />
+    <file src="bin\Debug\System.Memory.dll" target="lib\net471\System.Memory.dll" />
+    <file src="bin\Debug\System.Net.Http.dll" target="lib\net471\System.Net.Http.dll" />
+    <file src="bin\Debug\System.Net.Sockets.dll" target="lib\net471\System.Net.Sockets.dll" />
+    <file src="bin\Debug\System.Numerics.Vectors.dll" target="lib\net471\System.Numerics.Vectors.dll" />
+    <file src="bin\Debug\System.Runtime.CompilerServices.Unsafe.dll" target="lib\net471\System.Runtime.CompilerServices.Unsafe.dll" />
+    <file src="bin\Debug\System.Runtime.Serialization.Primitives.dll" target="lib\net471\System.Runtime.Serialization.Primitives.dll" />
+    <file src="bin\Debug\System.Security.Cryptography.Algorithms.dll" target="lib\net471\System.Security.Cryptography.Algorithms.dll" />
+    <file src="bin\Debug\System.Security.SecureString.dll" target="lib\net471\System.Security.SecureString.dll" />
+    <file src="bin\Debug\System.ServiceModel.Http.dll" target="lib\net471\System.ServiceModel.Http.dll" />
+    <file src="bin\Debug\System.ServiceModel.Primitives.dll" target="lib\net471\System.ServiceModel.Primitives.dll" />
+    <file src="bin\Debug\System.Text.Encodings.Web.dll" target="lib\net471\System.Text.Encodings.Web.dll" />
+    <file src="bin\Debug\System.Text.Json.dll" target="lib\net471\System.Text.Json.dll" />
+    <file src="bin\Debug\System.Threading.Overlapped.dll" target="lib\net471\System.Threading.Overlapped.dll" />
+    <file src="bin\Debug\System.Threading.Tasks.Extensions.dll" target="lib\net471\System.Threading.Tasks.Extensions.dll" />
+    <file src="bin\Debug\System.ValueTuple.dll" target="lib\net471\System.ValueTuple.dll" />
+    <file src="bin\Debug\System.Xml.XPath.XDocument.dll" target="lib\net471\System.Xml.XPath.XDocument.dll" />
+    <file src="bin\Debug\TimeZoneConverter.dll" target="lib\net471\TimeZoneConverter.dll" />
+  </files>
+</package>
