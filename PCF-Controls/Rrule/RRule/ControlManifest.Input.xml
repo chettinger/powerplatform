@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<manifest>
+  <control namespace="AIS" constructor="RRule" version="0.0.1" display-name-key="RRule" description-key="Generates recurring dates" control-type="standard">
+    <external-service-usage enabled="false">
+    </external-service-usage>
+    <!-- property node identifies a specific, configurable piece of data that the control expects from CDS -->
+    <!-- input properties -->
+    <property name="freq" display-name-key="Frequency" description-key="One of the following: Yearly, Monthly, Weekly, Daily." of-type="Enum" usage="input" required="false" default-value="Yearly">
+      <value name="Yearly" display-name-key="Yearly">Yearly</value>
+      <value name="Monthly" display-name-key="Monthly">Monthly</value>
+      <value name="Weekly" display-name-key="Weekly">Weekly</value>
+      <value name="Daily" display-name-key="Daily">Daily</value>
+      <value name="Hourly" display-name-key="Hourly">Hourly</value>
+      <value name="Minutely" display-name-key="Minutely">Minutely</value>
+      <value name="Secondly" display-name-key="Secondly">Secondly</value>
+    </property>
+    <property name="interval" display-name-key="Interval" description-key="The interval between each freq iteration. For example, when using Yearly, an interval of 2 means once every two years, but with Hourly, it means once every two hours. The default interval is 1." of-type="Whole.None" usage="input" required="true" pfx-default-value="1" />
+    <property name="count" display-name-key="Count" description-key="How many occurrences will be generated." of-type="Whole.None" usage="input" required="false" />
+    <property name="bySetPos" display-name-key="By Set Pos" description-key="Property_Desc_Key" of-type="Whole.None" usage="input" required="false" />
+    <property name="startDate" display-name-key="Start Date" description-key="The recurrence start. Besides being the base for the recurrence, missing parameters in the final recurrence instances will also be extracted from this date." of-type="DateAndTime.DateAndTime" usage="input" required="true" pfx-default-value="Today()" />
+    <property name="endDate" display-name-key="End Date" description-key="The last date or until date" of-type="DateAndTime.DateAndTime" usage="input" required="false" />
+    <property name="byWeekDay" display-name-key="By Weekday Day" description-key="Property_Desc_Key" of-type="SingleLine.Text" usage="input" required="false" />
+    <property name="byMonth" display-name-key="By Month" description-key="Property_Desc_Key" of-type="SingleLine.Text" usage="input" required="false" />
+    <property name="byMonthDay" display-name-key="By Month Day" description-key="Property_Desc_Key" of-type="SingleLine.Text" usage="input" required="false" />
+    <property name="byYearDay" display-name-key="By Year Day" description-key="Property_Desc_Key" of-type="SingleLine.Text" usage="input" required="false" />
+    <!-- output properties -->
+    <property name="stringDateOutput" display-name-key="Dates" description-key="The generated dates as a json string." of-type="SingleLine.Text" usage="output" required="false" />
+    <property name="rruleStringOutput" display-name-key="RRULE String" description-key="The generated rrule string." of-type="SingleLine.Text" usage="output" required="false" />
+    <property name="rruleTextOutput" display-name-key="RRULE Text Output" description-key="Property_Desc_Key" of-type="SingleLine.Text" usage="output" required="false" />
+    <resources>
+      <code path="index.ts" order="1" />
+    </resources>
+  </control>
+</manifest>
