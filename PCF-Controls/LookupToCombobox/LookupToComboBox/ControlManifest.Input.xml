@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<manifest>
-  <control namespace="AIS" constructor="LookupToComboBox" version="0.0.1" display-name-key="LookupToComboBox" description-key="LookupToCombobox description" control-type="standard" >
+<manifest>  <control namespace="AIS" constructor="LookupToComboBox" version="0.0.2" display-name-key="LookupToComboBox" description-key="Control that turns a Lookup into ComboBox for model-driven apps description" control-type="standard" >
     <property name="lookup" display-name-key="LookupField" description-key="The lookup control being bound to." of-type="Lookup.Simple" usage="bound" required="true" />
-    <property name="lookupViewGuid" display-name-key="LookupViewGuid" description-key="The GUID of the view to that is used to lookup records." of-type="SingleLine.Text" usage="input" required="true" />
-    <property name="displayNameField" display-name-key="DisplayNameField" description-key="The name of the field to display (ex. my_name)." of-type="SingleLine.Text" usage="input" required="true" />
-    <property name="autoComplete" display-name-key="AutoCompleteField" description-key="Auto Complete when user types." of-type="Enum" usage="input" required="true" default-value="1">
-      <value name="Off" display-name-key="Off" description-key="Auto Complete">0</value>
-      <value name="On" display-name-key="On" description-key="No Auto Complete">1</value>
+    <property name="lookupViewGuid" display-name-key="LookupViewGuid" description-key="The GUID of the view to that is used to lookup records. Leave empty to use the default view." of-type="SingleLine.Text" usage="input" required="false" />
+    <property name="displayNameField" display-name-key="DisplayNameField" description-key="The name of the field to display (ex. name). Leave empty to use the primary name field." of-type="SingleLine.Text" usage="input" required="false" />
+    <property name="autoComplete" display-name-key="AutoCompleteField" description-key="Controls whether auto-complete suggests records as the user types." of-type="Enum" usage="input" required="false" default-value="1">
+      <value name="Off" display-name-key="Off" description-key="Auto-complete is disabled.">0</value>
+      <value name="On" display-name-key="On" description-key="Auto-complete is enabled. Suggestions will appear as the user types.">1</value>
     </property>
     <resources>
       <code path="index.ts" order="1"/>

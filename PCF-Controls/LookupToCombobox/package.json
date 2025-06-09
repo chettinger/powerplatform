@@ -11,14 +11,7 @@
     "start": "pcf-scripts start",
     "start:watch": "pcf-scripts start watch",
     "refreshTypes": "pcf-scripts refreshTypes"
-  },  "dependencies": {
-    "@types/react": "^18.3.23",
-    "@types/react-dom": "^18.3.5",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "@fluentui/react": "^8.123.0"
-  },
-  "devDependencies": {
+  },  "devDependencies": {
     "@eslint/js": "^9.25.1",
     "@microsoft/eslint-plugin-power-apps": "^0.2.51",
     "@types/node": "^18.19.86",
@@ -29,5 +22,10 @@
     "pcf-start": "^1",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.31.0"
+  },
+  "dependencies": {
+    "@fluentui/react": "^8.55.0",
+    "@fluentui/react-hooks": "^8.3.11",
+    "react-hooks": "^1.0.1"
   }
 }

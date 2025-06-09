@@ -27,9 +27,8 @@ foreach ($controlDir in $controlDirs) {
     Write-Host "[$currentControl/$totalControls] Installing dependencies for $controlName..." -ForegroundColor Yellow
     
     Push-Location $controlDir.FullName
-    
-    try {
-        $installResult = & npm install 2>&1
+      try {
+        $installResult = & npm install --legacy-peer-deps 2>&1
         if ($LASTEXITCODE -eq 0) {
             Write-Host "  ✓ $controlName dependencies installed successfully" -ForegroundColor Green
             $results += @{ Control = $controlName; Status = "Success"; Time = Get-Date }
