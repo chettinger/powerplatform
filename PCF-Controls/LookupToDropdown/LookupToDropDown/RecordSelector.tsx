@@ -1,15 +1,14 @@
 import * as React from 'react'
-import { ComboBox, IComboBoxOption, IComboBoxStyles } from '@fluentui/react/lib/ComboBox'
+import { Dropdown, IDropdownOption, IDropdownStyles } from '@fluentui/react/lib/Dropdown'
 
 export interface IRecordSelectorProps {
     selectedRecordId: string | undefined;
-    availableOptions: IComboBoxOption[];
-    autoComplete: boolean;
-    onChange: (selectedOption?: IComboBoxOption) => void;
+    availableOptions: IDropdownOption[];
+    onChange: (selectedOption?: IDropdownOption) => void;
 }
 
 export const RecordSelector: React.FunctionComponent<IRecordSelectorProps> = (props) => {
-  const comboStyles: Partial<IComboBoxStyles> = {
+  const dropdownStyles: Partial<IDropdownStyles> = {
     root: [
       {
         border: 'none !important',
@@ -46,7 +45,7 @@ export const RecordSelector: React.FunctionComponent<IRecordSelectorProps> = (pr
         }
       }
     ],
-    input: [
+    title: [
       {
         border: 'none !important',
         outline: 'none !important',
@@ -59,9 +58,6 @@ export const RecordSelector: React.FunctionComponent<IRecordSelectorProps> = (pr
         fontFamily: 'inherit',
         boxShadow: 'none !important',
         selectors: {
-          '::placeholder': {
-            color: '#666666'
-          },
           ':focus': {
             outline: 'none !important',
             backgroundColor: '#f8f8f8',
@@ -79,8 +75,9 @@ export const RecordSelector: React.FunctionComponent<IRecordSelectorProps> = (pr
             boxShadow: 'none !important'
           }
         }
-      }    ],
-    container: [
+      }
+    ],
+    dropdown: [
       {
         border: 'none !important',
         outline: 'none !important',
@@ -104,7 +101,7 @@ export const RecordSelector: React.FunctionComponent<IRecordSelectorProps> = (pr
         }
       }                                                   
     ],
-    inputDisabled: [
+    dropdownItemsWrapper: [
       {
         border: 'none !important',
         outline: 'none !important',
@@ -126,18 +123,15 @@ export const RecordSelector: React.FunctionComponent<IRecordSelectorProps> = (pr
       }
     ]
   }
+
   return (
-        <ComboBox
-            selectedKey={props.selectedRecordId}
-            options={props.availableOptions}
-            autoComplete={props.autoComplete ? 'on' : 'off'}
-            allowFreeform={true}
-            onChange={(e: unknown, option?: IComboBoxOption) => {
-              props.onChange(option)
-            }}
-            styles={comboStyles}
-        />
+    <Dropdown
+        selectedKey={props.selectedRecordId}
+        options={props.availableOptions}
+        onChange={(e: unknown, option?: IDropdownOption) => {
+          props.onChange(option)
+        }}
+        styles={dropdownStyles}
+    />
   )
 }
-
-

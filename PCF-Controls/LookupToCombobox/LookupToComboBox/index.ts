@@ -87,10 +87,10 @@ export class LookupToComboBox implements ComponentFramework.StandardControl<IInp
             });
           });
       });
-    }
-
-    public updateView (context: ComponentFramework.Context<IInputs>): void {
+    }    public updateView (context: ComponentFramework.Context<IInputs>): void {
       this.renderControl(context);
+      // Ensure borders are removed after any updates
+      this.removeBordersFromContainer();
     }
 
     private renderControl (context: ComponentFramework.Context<IInputs>) {
@@ -117,9 +117,79 @@ export class LookupToComboBox implements ComponentFramework.StandardControl<IInp
           }
           this._notifyOutputChanged();
         }
-      });
-
-      ReactDom.render(recordSelector, this._container);
+      });      ReactDom.render(recordSelector, this._container);
+      
+      // Override host environment borders and outlines
+      this.removeBordersFromContainer();
+    }    private removeBordersFromContainer(): void {
+      // Remove borders from the container itself
+      this._container.style.border = "none !important";
+      this._container.style.outline = "none !important";
+      this._container.style.boxShadow = "none !important";
+      
+      // Walk up the DOM tree to remove borders from all parent containers
+      let currentElement = this._container.parentElement;
+      let level = 0;
+      while (currentElement && level < 5) { // Limit to 5 levels to avoid infinite loops
+        currentElement.style.border = "none !important";
+        currentElement.style.outline = "none !important";
+        currentElement.style.boxShadow = "none !important";
+        
+        // Specifically target Dynamics 365 container classes
+        if (currentElement.classList.contains('pa-bx') || 
+            currentElement.classList.contains('flexbox') ||
+            currentElement.classList.contains('customControl')) {
+          currentElement.style.border = "none !important";
+          currentElement.style.outline = "none !important";
+          currentElement.style.boxShadow = "none !important";
+        }
+        
+        currentElement = currentElement.parentElement;
+        level++;
+      }
+      
+      // Use setTimeout to ensure DOM is fully rendered before applying styles
+      setTimeout(() => {
+        // Target all ComboBox-related elements more aggressively
+        const selectors = [
+          '.ms-ComboBox-container',
+          '.ms-ComboBox',
+          '.ms-ComboBox-Input',
+          '[data-ktp-target="true"]',
+          '[class*="ComboBox"]',
+          '[id*="ComboBox"]',
+          'input[type="text"]',
+          'button.ms-ComboBox-CaretDown-button'
+        ];
+        
+        selectors.forEach(selector => {
+          const elements = this._container.querySelectorAll(selector);
+          elements.forEach((element: Element) => {
+            const htmlElement = element as HTMLElement;
+            htmlElement.style.border = "none !important";
+            htmlElement.style.outline = "none !important";
+            htmlElement.style.boxShadow = "none !important";
+          });
+        });
+        
+        // Also target any elements within the document that might be related to our control
+        const customControlElement = document.querySelector('.customControl.AIS.LookupToComboBox');
+        if (customControlElement) {
+          const htmlElement = customControlElement as HTMLElement;
+          htmlElement.style.border = "none !important";
+          htmlElement.style.outline = "none !important";
+          htmlElement.style.boxShadow = "none !important";
+          
+          // Remove borders from all child elements
+          const allChildren = customControlElement.querySelectorAll('*');
+          allChildren.forEach((child: Element) => {
+            const childElement = child as HTMLElement;
+            childElement.style.border = "none !important";
+            childElement.style.outline = "none !important";
+            childElement.style.boxShadow = "none !important";
+          });
+        }
+      }, 100);
     }
 
     public getOutputs (): IOutputs {

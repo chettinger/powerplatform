@@ -1,52 +1,197 @@
-import { IInputs, IOutputs } from "./generated/ManifestTypes";
+import { IInputs, IOutputs } from './generated/ManifestTypes'
+import * as React from 'react'
+import * as ReactDom from 'react-dom'
+import { RecordSelector } from './RecordSelector'
+import { IDropdownOption } from '@fluentui/react/lib/Dropdown'
 
 export class LookupToDropDown implements ComponentFramework.StandardControl<IInputs, IOutputs> {
-    /**
-     * Empty constructor.
-     */
-    constructor() {
-        // Empty
-    }
-
-    /**
-     * Used to initialize the control instance. Controls can kick off remote server calls and other initialization actions here.
-     * Data-set values are not initialized here, use updateView.
-     * @param context The entire property bag available to control via Context Object; It contains values as set up by the customizer mapped to property names defined in the manifest, as well as utility functions.
-     * @param notifyOutputChanged A callback method to alert the framework that the control has new outputs ready to be retrieved asynchronously.
-     * @param state A piece of data that persists in one session for a single user. Can be set at any point in a controls life cycle by calling 'setControlState' in the Mode interface.
-     * @param container If a control is marked control-type='standard', it will receive an empty div element within which it can render its content.
-     */
-    public init(
-        context: ComponentFramework.Context<IInputs>,
-        notifyOutputChanged: () => void,
-        state: ComponentFramework.Dictionary,
-        container: HTMLDivElement
+    private _container: HTMLDivElement;
+    private _notifyOutputChanged: () => void;
+    private _entityName: string;
+    private _viewId: string;
+    private _availableOptions: IDropdownOption[];
+    private _currentValue?: ComponentFramework.LookupValue[];
+    private _logString: string;
+    constructor () {      
+    }    public init(
+      context: ComponentFramework.Context<IInputs>,
+      notifyOutputChanged: () => void,
+      state: ComponentFramework.Dictionary,
+      container: HTMLDivElement
     ): void {
-        // Add control initialization code
+      this._container = container;
+      this._notifyOutputChanged = notifyOutputChanged;
+      this._logString = `[LookupToDropDown(${(context as unknown as { navigation: { _customControlProperties: { controlId: string } } }).navigation._customControlProperties.controlId})]`;
+      console.debug(`${this._logString} Control initializing, getting target entity type from lookup`);
+
+      this._entityName = context.parameters.lookup.getTargetEntityType();
+      // Use provided view ID or fall back to the lookup's default view
+      this._viewId = context.parameters.lookupViewGuid.raw || context.parameters.lookup.getViewId();
+
+      console.debug(
+            `${this._logString} Target entity type [${this._entityName}] and view id [${this._viewId}] retrieved from context, getting entity metadata`
+      );
+
+      context.utils.getEntityMetadata(this._entityName).then((metadata) => {
+        const entityIdFieldName = metadata.PrimaryIdAttribute;
+        // Use provided display field or fall back to the primary name attribute
+        const entityNameFieldName = context.parameters.displayNameField.raw || metadata.PrimaryNameAttribute;
+
+        console.debug(`${this._logString} Using view id [${this._viewId}] to retrieve fetchXML for view`);
+
+        context.webAPI
+          .retrieveRecord('savedquery', this._viewId, '?$select=name,fetchxml')
+          .then((queryFetchXml) => {
+            // const query = `?$select=${entityIdFieldName},${entityNameFieldName}`;
+            const query = '?fetchXml=' + queryFetchXml.fetchxml;
+            console.info(`${this._logString} Retrieving multiple records using fetchXml [${query}]`);
+
+            context.webAPI.retrieveMultipleRecords(this._entityName, query).then((result) => {
+              this._availableOptions = result.entities.map((r) => {
+                return {
+                  key: r[entityIdFieldName],
+                  text: r[entityNameFieldName] ?? 'Display Name is not available'
+                };
+              });
+
+              this.renderControl(context);
+            }).catch((error) => {
+              console.error(`${this._logString} Error retrieving records:`, error);
+              // Provide empty options array as fallback
+              this._availableOptions = [];
+              this.renderControl(context);
+            });
+          }).catch((error) => {
+            console.error(`${this._logString} Error retrieving view:`, error);
+            // Fallback to simple query without fetchXML
+            const query = `?$select=${entityIdFieldName},${entityNameFieldName}`;
+            context.webAPI.retrieveMultipleRecords(this._entityName, query).then((result) => {
+              this._availableOptions = result.entities.map((r) => {
+                return {
+                  key: r[entityIdFieldName],
+                  text: r[entityNameFieldName] ?? 'Display Name is not available'
+                };
+              });
+              this.renderControl(context);
+            }).catch((fallbackError) => {
+              console.error(`${this._logString} Fallback query also failed:`, fallbackError);
+              this._availableOptions = [];
+              this.renderControl(context);
+            });
+          });
+      });
+    }    public updateView (context: ComponentFramework.Context<IInputs>): void {
+      this.renderControl(context);
+      // Ensure borders are removed after any updates
+      this.removeBordersFromContainer();
     }
 
+    private renderControl (context: ComponentFramework.Context<IInputs>) {
+      const recordId =
+            context.parameters.lookup.raw != null && context.parameters.lookup.raw.length > 0
+              ? context.parameters.lookup.raw[0].id
+              : undefined;
 
-    /**
-     * Called when any value in the property bag has changed. This includes field values, data-sets, global values such as container height and width, offline status, control metadata values such as label, visible, etc.
-     * @param context The entire property bag available to control via Context Object; It contains values as set up by the customizer mapped to names defined in the manifest, as well as utility functions
-     */
-    public updateView(context: ComponentFramework.Context<IInputs>): void {
-        // Add code to update control view
+      const recordSelector = React.createElement(RecordSelector, {
+        selectedRecordId: recordId,
+        availableOptions: this._availableOptions,
+        onChange: (selectedOption?: IDropdownOption) => {
+          if (typeof selectedOption === 'undefined') {
+            this._currentValue = undefined;
+          } else {
+            this._currentValue = [
+              {
+                id: selectedOption.key as string,
+                name: selectedOption.text,
+                entityType: this._entityName
+              }
+            ];
+          }
+          this._notifyOutputChanged();
+        }
+      });
+
+      ReactDom.render(recordSelector, this._container);
+      
+      // Override host environment borders and outlines
+      this.removeBordersFromContainer();
     }
 
-    /**
-     * It is called by the framework prior to a control receiving new data.
-     * @returns an object based on nomenclature defined in manifest, expecting object[s] for property marked as "bound" or "output"
-     */
-    public getOutputs(): IOutputs {
-        return {};
+    private removeBordersFromContainer(): void {
+      // Remove borders from the container itself
+      this._container.style.border = "none !important";
+      this._container.style.outline = "none !important";
+      this._container.style.boxShadow = "none !important";
+      
+      // Walk up the DOM tree to remove borders from all parent containers
+      let currentElement = this._container.parentElement;
+      let level = 0;
+      while (currentElement && level < 5) { // Limit to 5 levels to avoid infinite loops
+        currentElement.style.border = "none !important";
+        currentElement.style.outline = "none !important";
+        currentElement.style.boxShadow = "none !important";
+        
+        // Specifically target Dynamics 365 container classes
+        if (currentElement.classList.contains('pa-bx') || 
+            currentElement.classList.contains('flexbox') ||
+            currentElement.classList.contains('customControl')) {
+          currentElement.style.border = "none !important";
+          currentElement.style.outline = "none !important";
+          currentElement.style.boxShadow = "none !important";
+        }
+        
+        currentElement = currentElement.parentElement;
+        level++;
+      }
+      
+      // Use setTimeout to ensure DOM is fully rendered before applying styles
+      setTimeout(() => {
+        // Target all Dropdown-related elements more aggressively
+        const selectors = [
+          '.ms-Dropdown-container',
+          '.ms-Dropdown',
+          '.ms-Dropdown-title',
+          '[data-ktp-target="true"]',
+          '[class*="Dropdown"]',
+          '[id*="Dropdown"]',
+          'button.ms-Dropdown-title'
+        ];
+        
+        selectors.forEach(selector => {
+          const elements = this._container.querySelectorAll(selector);
+          elements.forEach((element: Element) => {
+            const htmlElement = element as HTMLElement;
+            htmlElement.style.border = "none !important";
+            htmlElement.style.outline = "none !important";
+            htmlElement.style.boxShadow = "none !important";
+          });
+        });
+        
+        // Also target any elements within the document that might be related to our control
+        const customControlElement = document.querySelector('.customControl.AIS.LookupToDropDown');
+        if (customControlElement) {
+          const htmlElement = customControlElement as HTMLElement;
+          htmlElement.style.border = "none !important";
+          htmlElement.style.outline = "none !important";
+          htmlElement.style.boxShadow = "none !important";
+          
+          // Remove borders from all child elements
+          const allChildren = customControlElement.querySelectorAll('*');
+          allChildren.forEach((child: Element) => {
+            const childElement = child as HTMLElement;
+            childElement.style.border = "none !important";
+            childElement.style.outline = "none !important";
+            childElement.style.boxShadow = "none !important";
+          });
+        }
+      }, 100);
+    }    public getOutputs (): IOutputs {
+      return {
+        lookup: this._currentValue
+      };
     }
 
-    /**
-     * Called when the control is to be removed from the DOM tree. Controls should use this call for cleanup.
-     * i.e. cancelling any pending remote calls, removing listeners, etc.
-     */
-    public destroy(): void {
-        // Add code to cleanup control if necessary
+    public destroy (): void {
+      ReactDom.unmountComponentAtNode(this._container);
     }
 }

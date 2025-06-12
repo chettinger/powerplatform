@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<manifest>  <control namespace="AIS" constructor="LookupToComboBox" version="0.0.2" display-name-key="LookupToComboBox" description-key="Control that turns a Lookup into ComboBox for model-driven apps description" control-type="standard" >
+<manifest>
+  <control namespace="AIS" constructor="LookupToComboBox" version="0.0.13" display-name-key="LookupToComboBox" description-key="Control that turns a Lookup into ComboBox for model-driven apps description" control-type="standard" >
     <property name="lookup" display-name-key="LookupField" description-key="The lookup control being bound to." of-type="Lookup.Simple" usage="bound" required="true" />
     <property name="lookupViewGuid" display-name-key="LookupViewGuid" description-key="The GUID of the view to that is used to lookup records. Leave empty to use the default view." of-type="SingleLine.Text" usage="input" required="false" />
     <property name="displayNameField" display-name-key="DisplayNameField" description-key="The name of the field to display (ex. name). Leave empty to use the primary name field." of-type="SingleLine.Text" usage="input" required="false" />
@@ -9,7 +10,8 @@
     </property>
     <resources>
       <code path="index.ts" order="1"/>
-    </resources>    <feature-usage>
+    </resources>
+    <feature-usage>
       <uses-feature name="Utility" required="true" />
       <uses-feature name="WebAPI" required="true" />
     </feature-usage>

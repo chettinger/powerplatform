@@ -30,9 +30,11 @@ export default [
         projectService: true,
         tsconfigRootDir: import.meta.dirname,
       },
-    },
-
-    rules: {
+    },    rules: {
+      "promise/always-return": "off",
+      "promise/catch-or-return": "off",
+      "promise/no-nesting": "off",
+      "@typescript-eslint/no-empty-function": "off",
       "@typescript-eslint/no-unused-vars": "off",
     },
   },

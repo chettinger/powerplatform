@@ -36,8 +36,17 @@ Write-Host "Managed: $Managed" -ForegroundColor Gray
 Write-Host ""
 
 try {
-    # Step 1: Build all controls
-    Write-Host "Step 1: Building all controls..." -ForegroundColor Yellow
+    # Step 1: Increment versions for all controls
+    Write-Host "Step 1: Incrementing control versions..." -ForegroundColor Yellow
+    $versionResult = & .\increment-version.ps1
+    if ($LASTEXITCODE -ne 0) {
+        throw "Version increment failed. Please check the output above for errors."
+    }
+    Write-Host "✓ All control versions incremented successfully" -ForegroundColor Green
+    Write-Host ""
+
+    # Step 2: Build all controls
+    Write-Host "Step 2: Building all controls..." -ForegroundColor Yellow
     $buildResult = & npm run build:all
     if ($LASTEXITCODE -ne 0) {
         throw "Build failed. Please check the output above for errors."
@@ -45,11 +54,11 @@ try {
     Write-Host "✓ All controls built successfully" -ForegroundColor Green
     Write-Host ""
 
-    # Step 2: Create or update solution
+    # Step 3: Create or update solution
     $solutionPath = "Solutions\$SolutionName"
     
     if (!(Test-Path $solutionPath)) {
-        Write-Host "Step 2: Creating new solution..." -ForegroundColor Yellow
+        Write-Host "Step 3: Creating new solution..." -ForegroundColor Yellow
         
         # Create Solutions directory if it doesn't exist
         if (!(Test-Path "Solutions")) {
@@ -74,13 +83,13 @@ try {
         Pop-Location
         Write-Host "✓ Solution created and controls added" -ForegroundColor Green
     } else {
-        Write-Host "Step 2: Using existing solution..." -ForegroundColor Yellow
+        Write-Host "Step 3: Using existing solution..." -ForegroundColor Yellow
         Write-Host "✓ Solution found at $solutionPath" -ForegroundColor Green
     }
     Write-Host ""
 
-    # Step 3: Build solution
-    Write-Host "Step 3: Building solution..." -ForegroundColor Yellow
+    # Step 4: Build solution
+    Write-Host "Step 4: Building solution..." -ForegroundColor Yellow
     Push-Location $solutionPath
       $buildConfig = if ($Managed) { "Release" } else { "Debug" }
     $msbuildResult = & dotnet build --configuration $buildConfig
@@ -92,15 +101,15 @@ try {
     Write-Host "✓ Solution built successfully" -ForegroundColor Green
     Write-Host ""
 
-    # Step 4: Connect to environment
-    Write-Host "Step 4: Connecting to environment..." -ForegroundColor Yellow
+    # Step 5: Connect to environment
+    Write-Host "Step 5: Connecting to environment..." -ForegroundColor Yellow
     $authResult = & pac auth create --url $EnvironmentUrl
     if ($LASTEXITCODE -ne 0) {
         throw "Authentication failed. Please check your credentials and environment URL."
     }
     Write-Host "✓ Connected to environment" -ForegroundColor Green
-    Write-Host ""    # Step 5: Import solution
-    Write-Host "Step 5: Importing solution..." -ForegroundColor Yellow
+    Write-Host ""    # Step 6: Import solution
+    Write-Host "Step 6: Importing solution..." -ForegroundColor Yellow
     
     # Look for solution file (try different naming patterns)
     $solutionFile = $null
