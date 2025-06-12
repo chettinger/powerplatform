@@ -12,6 +12,15 @@ $controlDirs = Get-ChildItem -Directory | Where-Object {
     ($_.Name -notin @("node_modules", ".git", "Solutions"))
 }
 
+# Add RRule control (special case with nested structure)
+$rruleControlPath = "RRule\RruleControl"
+if (Test-Path $rruleControlPath) {
+    $rruleDir = Get-Item $rruleControlPath
+    if (Test-Path (Join-Path $rruleDir.FullName "package.json")) {
+        $controlDirs += $rruleDir
+    }
+}
+
 Write-Host "Found $($controlDirs.Count) PCF controls to install dependencies for:" -ForegroundColor Cyan
 $controlDirs | ForEach-Object { Write-Host "  - $($_.Name)" -ForegroundColor Gray }
 Write-Host ""

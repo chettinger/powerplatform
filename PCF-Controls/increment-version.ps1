@@ -53,8 +53,18 @@ if ($ControlName) {
     }
     $controlDirs = @(Get-Item $controlPath)
 } else {
+    # Get all control directories that have ControlManifest.Input.xml files
     $controlDirs = Get-ChildItem -Directory | Where-Object { 
         Test-Path (Join-Path $_.FullName $_.Name "ControlManifest.Input.xml")
+    }
+    
+    # Add RRule control (special case with nested structure)
+    $rruleControlPath = "RRule\RruleControl"
+    if (Test-Path $rruleControlPath) {
+        $rruleDir = Get-Item $rruleControlPath
+        if (Test-Path (Join-Path $rruleDir.FullName "rrulepcf" "ControlManifest.Input.xml")) {
+            $controlDirs += $rruleDir
+        }
     }
 }
 
@@ -71,7 +81,13 @@ $successCount = 0
 
 foreach ($controlDir in $controlDirs) {
     $controlName = $controlDir.Name
-    $manifestPath = Join-Path $controlDir.FullName $controlName "ControlManifest.Input.xml"
+    
+    # Handle special case for RRule control with nested structure
+    if ($controlName -eq "RruleControl") {
+        $manifestPath = Join-Path $controlDir.FullName "rrulepcf" "ControlManifest.Input.xml"
+    } else {
+        $manifestPath = Join-Path $controlDir.FullName $controlName "ControlManifest.Input.xml"
+    }
     
     Write-Host "[$($successCount + 1)/$($controlDirs.Count)] Updating $controlName..." -ForegroundColor Yellow
     

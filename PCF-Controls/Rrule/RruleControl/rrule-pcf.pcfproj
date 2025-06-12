@@ -8,8 +8,8 @@
   <Import Project="$(PowerAppsTargetsPath)\Microsoft.PowerApps.VisualStudio.Pcf.props" Condition="Exists('$(PowerAppsTargetsPath)\Microsoft.PowerApps.VisualStudio.Pcf.props')" />
 
   <PropertyGroup>
-    <Name>RRule</Name>
-    <ProjectGuid>bc48a392-b5c8-4563-a8ef-c65c057bcd29</ProjectGuid>
+    <Name>rrule-pcf</Name>
+    <ProjectGuid>e2722796-34c8-4986-80b7-be9b96c01cbe</ProjectGuid>
     <OutputPath>$(MSBuildThisFileDirectory)out\controls</OutputPath>
   </PropertyGroup>
 
